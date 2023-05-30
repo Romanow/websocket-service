@@ -2,6 +2,8 @@ spring:
   application.name: websocket-service
   main.banner-mode: off
   profiles.active: local
+  session:
+    store-type: redis
 
 server:
   port: 8080
@@ -15,7 +17,8 @@ management:
       base-path: /manage
       exposure.include: info,health,loggers,prometheus
   health.diskspace.enabled: false
-  metrics.tags.application: ${spring.application.name}
+  metrics.tags:
+    application: ${spring.application.name}
   endpoint.health.show-details: always
   info.git.mode: simple
   health:

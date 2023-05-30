@@ -1,5 +1,15 @@
 version: "3.9"
 services:
+  redis:
+    image: "bitnami/redis:7.0"
+    container_name: redis
+    environment:
+      - REDIS_PASSWORD=test
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/bitnami/redis/data
+
   websocket-service:
     build: .
     image: romanowalex/websocket-service:v1.0
@@ -8,3 +18,8 @@ services:
       SPRING_PROFILES_ACTIVE: docker
     ports:
       - "8080:8080"
+    depends_on:
+      - redis
+
+volumes:
+  redis-data:

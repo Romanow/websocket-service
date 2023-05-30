@@ -15,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
 
 
-private const val USER = "user"
+private const val USER = "test"
 private const val PASSWORD = "test"
 private const val ROLE = "USER"
 

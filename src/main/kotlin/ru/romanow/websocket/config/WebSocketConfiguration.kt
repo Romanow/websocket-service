@@ -29,6 +29,7 @@ class WebSocketConfiguration(
     override fun configureMessageBroker(config: MessageBrokerRegistry) {
         config
             .setApplicationDestinationPrefixes("/chat")
-            .enableSimpleBroker("/app")
+            .setUserDestinationPrefix("/user")
+            .enableSimpleBroker("/queue")
     }
 }
