@@ -1,13 +1,15 @@
+server:
+  port: 8080
+  forward-headers-strategy: framework
+
 spring:
   application.name: websocket-service
   main.banner-mode: off
   profiles.active: local
   session:
     store-type: redis
+  redis:
 
-server:
-  port: 8080
-  forward-headers-strategy: framework
 
 management:
   endpoint:

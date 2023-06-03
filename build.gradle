@@ -8,6 +8,10 @@ plugins {
     id "io.spring.dependency-management" version "1.1.0"
 }
 
+ext {
+    testContainerVersion = "1.18.1"
+}
+
 [compileKotlin, compileTestKotlin]*.kotlinOptions*.jvmTarget = "17"
 
 repositories {
@@ -26,14 +30,17 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-websocket"
     implementation "org.springframework.boot:spring-boot-starter-logging"
     implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-data-redis"
     implementation "org.springframework.security:spring-security-messaging"
     implementation "org.springframework.session:spring-session-data-redis"
 
-    implementation "redis.clients:jedis"
+    implementation "io.lettuce:lettuce-core"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.jetbrains.kotlin:kotlin-reflect"
 
     testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.testcontainers:junit-jupiter:$testContainerVersion"
+    testImplementation "org.testcontainers:postgresql:$testContainerVersion"
 }
 
 test {

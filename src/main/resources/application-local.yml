@@ -2,7 +2,10 @@ spring:
   redis:
     host: localhost
     port: 6379
-    password: test
+    client-type: lettuce
 
 logging.level:
+  org.springframework.security: debug
   org.springframework.messaging: trace
+  org.springframework.session: trace
+  org.springframework.data.redis: trace
