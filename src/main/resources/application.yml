@@ -8,8 +8,6 @@ spring:
   profiles.active: local
   session:
     store-type: redis
-  redis:
-
 
 management:
   endpoint:

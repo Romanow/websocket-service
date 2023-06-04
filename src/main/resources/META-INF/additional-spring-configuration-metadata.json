@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "artemis.host",
+      "type": "java.lang.String",
+      "description": "Artemis broker host."
+    },
+    {
+      "name": "artemis.port",
+      "type": "java.lang.Integer",
+      "description": "Artemis broker port."
+    }
+  ]
+}

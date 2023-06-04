@@ -1,6 +1,7 @@
 package ru.romanow.websocket.handlers
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.slf4j.LoggerFactory
 import org.springframework.context.event.EventListener
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler
@@ -23,13 +24,15 @@ class UserMessageHandler(
     private val simpMessagingTemplate: SimpMessagingTemplate,
     private val simpUserRegistry: SimpUserRegistry,
     private val objectMapper: ObjectMapper,
-    redisTemplate: RedisTemplate<String, Long>
+    redisTemplate: RedisTemplate<String, Long>,
 ) {
+    private val logger = LoggerFactory.getLogger(UserMessageHandler::class.java)
     private val hashOperations = redisTemplate.boundHashOps<Long, String>("all")
 
     @MessageMapping("/message")
     @SendTo("/queue/message")
     fun reply(msg: String, principal: Principal): Message {
+        logger.info("Received new message [$msg] from ${principal.name}")
         val now = LocalDateTime.now()
         val message = Message(
             message = msg,
@@ -62,8 +65,15 @@ class UserMessageHandler(
         return toJson(messages)
     }
 
-    @EventListener(classes = [SessionConnectedEvent::class, SessionDisconnectEvent::class])
-    fun connectedEventHandler() {
+    @EventListener
+    fun connectedEventHandler(event: SessionConnectedEvent) {
+        logger.info("User ${event.user?.name} connected")
+        simpMessagingTemplate.convertAndSend("/queue/users", toJson(simpUserRegistry.users.map { it.name }))
+    }
+
+    @EventListener
+    fun disconnectedEventHandler(event: SessionDisconnectEvent) {
+        logger.info("User ${event.user?.name} disconnected")
         simpMessagingTemplate.convertAndSend("/queue/users", toJson(simpUserRegistry.users.map { it.name }))
     }
 

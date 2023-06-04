@@ -4,11 +4,22 @@ services:
     image: "bitnami/redis:7.0"
     container_name: redis
     environment:
-      - ALLOW_EMPTY_PASSWORD=yes
+      ALLOW_EMPTY_PASSWORD: yes
     ports:
       - "6379:6379"
     volumes:
       - redis-data:/bitnami/redis/data
+
+  artemis:
+    image: "romanowalex/artemis:2.28.0-arm"
+    container_name: artemis
+    environment:
+      ANONYMOUS_LOGIN: true
+    ports:
+      - "8161:8161"
+      - "61616:61616"
+    volumes:
+      - artemis-data:/var/lib/artemis-instance
 
   websocket-service-1:
     build: .
@@ -20,6 +31,7 @@ services:
       - "8081:8080"
     depends_on:
       - redis
+      - artemis
 
   websocket-service-2:
     build: .
@@ -31,6 +43,7 @@ services:
       - "8082:8080"
     depends_on:
       - redis
+      - artemis
 
   nginx:
     image: nginx:1.25
@@ -45,3 +58,4 @@ services:
 
 volumes:
   redis-data:
+  artemis-data:

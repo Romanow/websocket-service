@@ -4,8 +4,9 @@ spring:
     port: 6379
     client-type: lettuce
 
+artemis:
+  host: localhost
+  port: 61616
+
 logging.level:
-  org.springframework.security: debug
-  org.springframework.messaging: trace
-  org.springframework.session: trace
-  org.springframework.data.redis: trace
+  org.springframework.messaging: debug
