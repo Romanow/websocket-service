@@ -76,7 +76,7 @@ internal class WebSocketApplicationTest {
         private const val REDIS_IMAGE = "redis:7.0"
         private const val REDIS_PORT = 6379
 
-        private const val ARTEMIS_IMAGE = "romanowalex/artemis:2.28.0-arm"
+        private const val ARTEMIS_IMAGE = "romanowalex/artemis:2.28.0"
         private const val ARTEMIS_PORT = 61616
 
         @JvmStatic
