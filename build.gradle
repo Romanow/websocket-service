@@ -41,6 +41,7 @@ dependencies {
 
     kapt "org.springframework.boot:spring-boot-configuration-processor"
 
+    testImplementation "com.google.code.gson:gson"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.testcontainers:junit-jupiter:$testContainerVersion"
     testImplementation "org.testcontainers:postgresql:$testContainerVersion"
