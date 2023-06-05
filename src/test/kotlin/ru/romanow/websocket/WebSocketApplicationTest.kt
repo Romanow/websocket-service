@@ -19,6 +19,8 @@ import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
+import org.testcontainers.shaded.org.apache.commons.lang3.SystemUtils.IS_OS_MAC_OSX
+import org.testcontainers.shaded.org.apache.commons.lang3.SystemUtils.OS_ARCH
 import org.testcontainers.shaded.org.awaitility.Awaitility.await
 import org.testcontainers.shaded.org.hamcrest.Matchers.notNullValue
 import ru.romanow.websocket.model.Message
@@ -56,6 +58,7 @@ internal class WebSocketApplicationTest {
             override fun getPayloadType(headers: StompHeaders): Type {
                 return Message::class.java
             }
+
             override fun handleFrame(headers: StompHeaders, payload: Any?) {
                 logger.info("Received response $payload")
                 response.set(payload as Message)
@@ -87,10 +90,13 @@ internal class WebSocketApplicationTest {
 
         @JvmStatic
         @Container
-        var artemis: GenericContainer<*> = GenericContainer(ARTEMIS_IMAGE)
+        var artemis: GenericContainer<*> = GenericContainer(getArtemisImage())
             .withEnv("ANONYMOUS_LOGIN", "true")
             .withExposedPorts(ARTEMIS_PORT)
             .withLogConsumer(Slf4jLogConsumer(logger))
+
+        private fun getArtemisImage() =
+            if (IS_OS_MAC_OSX && OS_ARCH.equals("aarch64")) "$ARTEMIS_IMAGE-arm" else ARTEMIS_IMAGE
 
         @JvmStatic
         @DynamicPropertySource
