@@ -18,10 +18,7 @@ jobs:
           cache: "gradle"
 
       - name: Build project
-        run: |
-          docker pull romanowalex/artemis:2.28.0
-          docker pull redis:7.4
-          ./gradlew clean build
+        run: ./gradlew clean build
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

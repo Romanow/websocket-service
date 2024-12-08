@@ -18,6 +18,7 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient
 import org.springframework.web.socket.messaging.WebSocketStompClient
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
+import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.shaded.org.apache.commons.lang3.SystemUtils.IS_OS_MAC_OSX
@@ -99,6 +100,8 @@ internal class WebSocketApplicationTest {
             .withEnv("ANONYMOUS_LOGIN", "true")
             .withExposedPorts(ARTEMIS_PORT)
             .withLogConsumer(Slf4jLogConsumer(logger))
+            .withExposedPorts()
+            .waitingFor(Wait.forListeningPorts(ARTEMIS_PORT))
 
         private fun getArtemisImage() =
             if (IS_OS_MAC_OSX && OS_ARCH.equals("aarch64")) "$ARTEMIS_IMAGE-arm" else ARTEMIS_IMAGE
