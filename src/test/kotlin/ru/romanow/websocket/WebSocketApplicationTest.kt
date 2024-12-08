@@ -18,11 +18,8 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient
 import org.springframework.web.socket.messaging.WebSocketStompClient
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.output.Slf4jLogConsumer
-import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
-import org.testcontainers.shaded.org.apache.commons.lang3.SystemUtils.IS_OS_MAC_OSX
-import org.testcontainers.shaded.org.apache.commons.lang3.SystemUtils.OS_ARCH
 import org.testcontainers.shaded.org.awaitility.Awaitility.await
 import org.testcontainers.shaded.org.hamcrest.Matchers.notNullValue
 import ru.romanow.websocket.model.Message
@@ -85,9 +82,6 @@ internal class WebSocketApplicationTest {
         private const val REDIS_IMAGE = "redis:7.4"
         private const val REDIS_PORT = 6379
 
-        private const val ARTEMIS_IMAGE = "romanowalex/artemis:2.28.0"
-        private const val ARTEMIS_PORT = 61616
-
         @JvmStatic
         @Container
         var redis: RedisContainer = RedisContainer(REDIS_IMAGE)
@@ -95,23 +89,10 @@ internal class WebSocketApplicationTest {
             .withLogConsumer(Slf4jLogConsumer(logger))
 
         @JvmStatic
-        @Container
-        var artemis: GenericContainer<*> = GenericContainer(getArtemisImage())
-            .withEnv("ANONYMOUS_LOGIN", "true")
-            .withExposedPorts(ARTEMIS_PORT)
-            .withLogConsumer(Slf4jLogConsumer(logger))
-            .waitingFor(Wait.forListeningPorts())
-
-        private fun getArtemisImage() =
-            if (IS_OS_MAC_OSX && OS_ARCH.equals("aarch64")) "$ARTEMIS_IMAGE-arm" else ARTEMIS_IMAGE
-
-        @JvmStatic
         @DynamicPropertySource
         fun registerProperties(registry: DynamicPropertyRegistry) {
             registry.add("spring.redis.host") { "localhost" }
             registry.add("spring.redis.port") { redis.getMappedPort(REDIS_PORT) }
-            registry.add("artemis.host") { "localhost" }
-            registry.add("artemis.port") { artemis.getMappedPort(ARTEMIS_PORT) }
         }
     }
 }
