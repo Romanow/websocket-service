@@ -100,7 +100,7 @@ internal class WebSocketApplicationTest {
             .withEnv("ANONYMOUS_LOGIN", "true")
             .withExposedPorts(ARTEMIS_PORT)
             .withLogConsumer(Slf4jLogConsumer(logger))
-            .waitingFor(Wait.forListeningPorts(ARTEMIS_PORT))
+            .waitingFor(Wait.forListeningPorts())
 
         private fun getArtemisImage() =
             if (IS_OS_MAC_OSX && OS_ARCH.equals("aarch64")) "$ARTEMIS_IMAGE-arm" else ARTEMIS_IMAGE
