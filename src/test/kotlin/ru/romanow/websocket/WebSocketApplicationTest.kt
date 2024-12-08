@@ -28,6 +28,7 @@ import org.testcontainers.shaded.org.hamcrest.Matchers.notNullValue
 import ru.romanow.websocket.model.Message
 import java.lang.reflect.Type
 import java.time.Duration
+import java.time.Duration.ofSeconds
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.io.encoding.Base64
@@ -73,7 +74,7 @@ internal class WebSocketApplicationTest {
 
         session.send("/chat/message", msg)
 
-        await().atMost(Duration.ofSeconds(30)).untilAtomic(response, notNullValue())
+        await().atMost(ofSeconds(30)).untilAtomic(response, notNullValue())
         val message = response.get()
         assertThat(message.user).isEqualTo("test1")
         assertThat(message.message).isEqualTo(msg)
@@ -100,7 +101,7 @@ internal class WebSocketApplicationTest {
             .withEnv("ANONYMOUS_LOGIN", "true")
             .withExposedPorts(ARTEMIS_PORT)
             .withLogConsumer(Slf4jLogConsumer(logger))
-            .waitingFor(Wait.forLogMessage("HTTP Server started at http://0.0.0.0:8161", 1))
+            .waitingFor(Wait.forLogMessage(".*HTTP Server started.*\\s", 1).withStartupTimeout(ofSeconds(60)))
 
         private fun getArtemisImage() =
             if (IS_OS_MAC_OSX && OS_ARCH.equals("aarch64")) "$ARTEMIS_IMAGE-arm" else ARTEMIS_IMAGE
