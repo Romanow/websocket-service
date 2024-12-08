@@ -100,7 +100,6 @@ internal class WebSocketApplicationTest {
             .withEnv("ANONYMOUS_LOGIN", "true")
             .withExposedPorts(ARTEMIS_PORT)
             .withLogConsumer(Slf4jLogConsumer(logger))
-            .withExposedPorts()
             .waitingFor(Wait.forListeningPorts(ARTEMIS_PORT))
 
         private fun getArtemisImage() =
