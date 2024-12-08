@@ -9,7 +9,6 @@ import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.messaging.converter.GsonMessageConverter
 import org.springframework.messaging.simp.stomp.StompFrameHandler
 import org.springframework.messaging.simp.stomp.StompHeaders
-import org.springframework.messaging.simp.stomp.StompSession
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
@@ -28,7 +27,6 @@ import org.testcontainers.shaded.org.hamcrest.Matchers.notNullValue
 import ru.romanow.websocket.model.Message
 import java.lang.reflect.Type
 import java.time.Duration
-import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.io.encoding.Base64
@@ -60,7 +58,7 @@ internal class WebSocketApplicationTest {
         val handler = object : StompSessionHandlerAdapter() {}
         val future = stompClient.connectAsync("ws://localhost:$port/ws", WebSocketHttpHeaders(), headers, handler)
 
-        val session = future.get()
+        val session = future.get(10, TimeUnit.SECONDS)
         session.subscribe("/queue/message", object : StompFrameHandler {
             override fun getPayloadType(headers: StompHeaders): Type {
                 return Message::class.java

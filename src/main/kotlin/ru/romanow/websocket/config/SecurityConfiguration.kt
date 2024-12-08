@@ -2,6 +2,8 @@ package ru.romanow.websocket.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.Ordered
+import org.springframework.core.annotation.Order
 import org.springframework.messaging.Message
 import org.springframework.messaging.simp.SimpMessageType
 import org.springframework.messaging.support.ChannelInterceptor
@@ -17,10 +19,8 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.messaging.access.intercept.MessageMatcherDelegatingAuthorizationManager
-import org.springframework.security.messaging.web.csrf.CsrfChannelInterceptor
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.SecurityFilterChain
-
 
 private const val USERNAME = "test"
 private const val PASSWORD = "test"
@@ -72,5 +72,11 @@ class WebSocketSecurityConfiguration {
             .simpTypeMatchers(SimpMessageType.DISCONNECT).permitAll()
             .anyMessage().hasRole(USER_ROLE)
             .build()
+    }
+
+    @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    fun csrfChannelInterceptor(): ChannelInterceptor {
+        return object : ChannelInterceptor {}
     }
 }
