@@ -1,8 +1,9 @@
 spring:
-  redis:
-    host: localhost
-    port: 6379
-    client-type: lettuce
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      client-type: lettuce
 
 artemis:
   host: localhost
@@ -10,3 +11,5 @@ artemis:
 
 logging.level:
   org.springframework.messaging: debug
+  org.springframework.web.socket.server: debug
+  org.springframework.security: debug

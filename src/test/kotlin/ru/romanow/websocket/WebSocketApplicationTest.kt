@@ -7,11 +7,13 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.messaging.converter.GsonMessageConverter
-import org.springframework.messaging.simp.stomp.*
+import org.springframework.messaging.simp.stomp.StompFrameHandler
+import org.springframework.messaging.simp.stomp.StompHeaders
+import org.springframework.messaging.simp.stomp.StompSession
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
-import org.springframework.util.Base64Utils.encodeToString
 import org.springframework.web.socket.WebSocketHttpHeaders
 import org.springframework.web.socket.client.standard.StandardWebSocketClient
 import org.springframework.web.socket.messaging.WebSocketStompClient
@@ -26,11 +28,16 @@ import org.testcontainers.shaded.org.hamcrest.Matchers.notNullValue
 import ru.romanow.websocket.model.Message
 import java.lang.reflect.Type
 import java.time.Duration
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 
 typealias RedisContainer = GenericContainer<*>
 
+@ExperimentalEncodingApi
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @Testcontainers
@@ -48,10 +55,10 @@ internal class WebSocketApplicationTest {
         val stompClient = WebSocketStompClient(webSocketClient)
         stompClient.messageConverter = GsonMessageConverter()
         val headers = StompHeaders().also {
-            it.set("X-Authorization", encodeToString("$user:test".toByteArray()))
+            it.set("X-Authorization", Base64.encode("$user:test".toByteArray()))
         }
         val handler = object : StompSessionHandlerAdapter() {}
-        val future = stompClient.connect("ws://localhost:$port/ws", WebSocketHttpHeaders(), headers, handler)
+        val future = stompClient.connectAsync("ws://localhost:$port/ws", WebSocketHttpHeaders(), headers, handler)
 
         val session = future.get()
         session.subscribe("/queue/message", object : StompFrameHandler {
@@ -76,7 +83,7 @@ internal class WebSocketApplicationTest {
     companion object {
         private val logger = LoggerFactory.getLogger(WebSocketApplicationTest::class.java)
 
-        private const val REDIS_IMAGE = "redis:7.0"
+        private const val REDIS_IMAGE = "redis:7.4"
         private const val REDIS_PORT = 6379
 
         private const val ARTEMIS_IMAGE = "romanowalex/artemis:2.28.0"

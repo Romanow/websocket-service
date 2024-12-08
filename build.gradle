@@ -1,16 +1,16 @@
 plugins {
     id "idea"
     id "java-library"
-    id "org.jetbrains.kotlin.kapt" version "1.7.10"
-    id "org.jetbrains.kotlin.jvm" version "1.7.10"
-    id "org.jetbrains.kotlin.plugin.spring" version "1.7.10"
-    id "org.jetbrains.kotlin.plugin.jpa" version "1.7.10"
-    id "org.springframework.boot" version "2.7.8"
-    id "io.spring.dependency-management" version "1.1.0"
+    id "org.jetbrains.kotlin.kapt" version "1.9.25"
+    id "org.jetbrains.kotlin.jvm" version "1.9.25"
+    id "org.jetbrains.kotlin.plugin.spring" version "1.9.25"
+    id "org.springframework.boot" version "3.3.4"
+    id "io.spring.dependency-management" version "1.1.6"
+    id "com.adarshr.test-logger" version "3.2.0"
 }
 
 ext {
-    testContainerVersion = "1.18.1"
+    testContainerVersion = "1.20.4"
 }
 
 [compileKotlin, compileTestKotlin]*.kotlinOptions*.jvmTarget = "17"
@@ -49,6 +49,13 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    testLogging {
+        showStandardStreams = true
+    }
+}
+
+testlogger {
+    theme "mocha"
 }
 
 bootJar {

@@ -8,8 +8,10 @@ import org.springframework.messaging.simp.config.ChannelRegistration
 import org.springframework.messaging.simp.config.MessageBrokerRegistry
 import org.springframework.web.socket.config.annotation.*
 import ru.romanow.websocket.config.properties.ArtemisProperties
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 @Configuration
+@ExperimentalEncodingApi
 @EnableWebSocketMessageBroker
 @EnableConfigurationProperties(ArtemisProperties::class)
 @Order(Ordered.HIGHEST_PRECEDENCE + 99)

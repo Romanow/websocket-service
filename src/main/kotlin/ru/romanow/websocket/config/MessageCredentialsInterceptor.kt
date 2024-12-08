@@ -10,9 +10,11 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Service
-import org.springframework.util.Base64Utils.decodeFromString
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 @Service
+@ExperimentalEncodingApi
 class MessageCredentialsInterceptor(
     private val authenticationManager: AuthenticationManager,
 ) : ChannelInterceptor {
@@ -22,7 +24,7 @@ class MessageCredentialsInterceptor(
         if (accessor?.command == StompCommand.CONNECT) {
             val authorization: List<String>? = accessor.getNativeHeader("X-Authorization")
             if (authorization?.size == 1) {
-                val credentials = String(decodeFromString(authorization[0])).split(":")
+                val credentials = String(Base64.decode(authorization[0])).split(":")
                 if (credentials.size == 2) {
                     val user = UsernamePasswordAuthenticationToken(
                         credentials[0],
