@@ -11,5 +11,3 @@ artemis:
 
 logging.level:
   org.springframework.messaging: debug
-  org.springframework.web.socket.server: debug
-  org.springframework.security: debug
