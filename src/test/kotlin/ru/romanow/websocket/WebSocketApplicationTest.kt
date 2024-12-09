@@ -109,8 +109,8 @@ internal class WebSocketApplicationTest {
         @JvmStatic
         @DynamicPropertySource
         fun registerProperties(registry: DynamicPropertyRegistry) {
-            registry.add("spring.redis.host") { "localhost" }
-            registry.add("spring.redis.port") { redis.getMappedPort(REDIS_PORT) }
+            registry.add("spring.data.redis.host") { "localhost" }
+            registry.add("spring.data.redis.port") { redis.getMappedPort(REDIS_PORT) }
             registry.add("artemis.host") { "localhost" }
             registry.add("artemis.port") { artemis.getMappedPort(ARTEMIS_PORT) }
         }
